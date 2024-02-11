@@ -39,6 +39,29 @@ Different types of containers are LXC/LXD/LXCFS.
 Docker utilizes LXC containers, setting up these container environment is very hard as ther are very low level 
 and hence Docker offers a high level tools with several powerful funtionalities making it easy for end user like us.
 
-<img width="621" alt="image" src="https://github.com/ravindrakumarpatel/Docker/assets/159550370/457d2fa0-35ab-4dbb-824a-b197452d69e9">
+============================================================
+**Docker Editions**
+1) Community Edition - set of free docker products
+2) Eneterprise Edition - certified and supported container platform that comes with enterprise add ons like image management / image security etc come with some price.
+
+==============================================================
+**Resources**
+
+https://docs.docker.com/install/linux/docker-ce/ubuntu/
+
+Join our slack channel for support and discussions.
+
+Slack Group URL:
+
+https://kodekloud.com/pages/community
+
+===============================================================
+**docker commands**
+
+Run - start a container
+docker run nginx
+
+ps - list all containers
+docker ps
 
 
