@@ -190,6 +190,87 @@ Hello and Welcome Ravindra!
 So with the combination of -i and -t we are now attached to the terminal as well as in an interactive mode on the container.
 
 
+Run - PORT mapping
+
+docker run kodekloud/webapp
+* Running on http://0.0.0.0:5000/ (Press Ctrl+C to quit)
+If we want user access the application through port 80 on any docker host we could map port 80 of local host to port 5000 on the docker container using
+the -p parameter in our run
+
+docker run -p 80:5000 kodekloud/webapp
+
+Now teh user can access the application by going to the URL http://192.168.1.5:80 
+And all traffic on the port 80 on our docker host will get routed to port 5000 inside the docker container.
+
+This way we can run multiple instances of our application and map them to different ports on the docker host or run instances of differenyt application 
+on different ports as shown below:
+
+docker run -p 8000:5000 kodekloud/webapp
+docker run -p 8001:5000 kodekloud/webapp
+docker run -p 8002:5000 kodekloud/webapp
+
+
+RUN - Volume mapping
+Lets now look at how data is persisted in a Docker container. for eg.
+let say we were to run a MySql container when databses and tables are created
+
+docker run mysql
+here in above case data files are stored in location /var/lib/mysql inside the MySql docker container. Note that the docker container has its own isolated 
+file system and any changes to any files happen with in the container.
+
+Lets assume you dump a lot of data into the database. what happens if you were to delete the MySql Container and remove it?
+
+docker stop mysql
+docker rm mysql
+
+A soon as you do that the container along with all the data inside it gets blown away, meaning all its data is gone. If we would
+like to persists data we would want to map a dierctory outside the container on the docker host to a dierctory inside the container.
+
+docker run -v /opt/datadir:/var/lib/mysql mysql
+
+In this case we created a directory call /opt/datadir and map that to /var/lib/mysql inside the docker container using the -v option
+and specifying the directory on the docker host followed by a colon and the directory inside the docker container.
+This way when docker container runs, it will implicitly mount the external directory to a folder inside the docker container.
+This way all your data will now be stored in the external volume at /opt/datadir and thus will remain even if you delete the 
+docker container.
+
+The docker ps command is good enough to get the basic details about container like their names and ID's. But if we would like to see 
+additional details about a specific container use the docker insect command.
+
+Inspect Container
+docker inspect (container name) or (container id)
+eg:
+docker inspect blissful_hopper
+And it returns all the details of the container in a json formatsuch as the state, mount, configuration data, network settings etc.
+Remember to use it when you are required to find details on a container.
+
+Container logs:
+How do we see the logs of a container we run in the background?
+For example we run a simple web application using the -d parameter and it ran the container in a detached mode.
+How do we view the logs which happens to the contents written to the standard out of that container?
+Use the docker logs command and specify the docker conatiner id or name like below:
+
+docker logs (container name) or (container id)
+eg:
+docker logs blissful_hopper
+
+=====================================================================================================================
+
+Article on Jenkins Image:
+
+This is an update for the Jenkins image.
+In our upcoming demo video, I used a jenkins image which is now deprecated. Instead of that, we have to use jenkins/jenkins.
+
+In the demo video, I used the command:-
+docker run jenkins
+
+But as of now, we have to use the following command:-
+docker run jenkins/jenkins
+
+
+
+
+
 
 
 
