@@ -187,7 +187,7 @@ docker run -it kodekloud/simple-prompt-docker
 Welcome! Please enter your name: Ravindra
 Hello and Welcome Ravindra!
 
-So with the combination of -i and -t we are now attached to the terminal as well as in an interactive mode on the container.
+So with the combination of -t and -i we are now attached to the terminal as well as in an interactive mode on the container.
 
 
 Run - PORT mapping
@@ -199,7 +199,7 @@ the -p parameter in our run
 
 docker run -p 80:5000 kodekloud/webapp
 
-Now teh user can access the application by going to the URL http://192.168.1.5:80 
+Now the user can access the application by going to the URL http://192.168.1.5:80 
 And all traffic on the port 80 on our docker host will get routed to port 5000 inside the docker container.
 
 This way we can run multiple instances of our application and map them to different ports on the docker host or run instances of differenyt application 
@@ -223,12 +223,12 @@ Lets assume you dump a lot of data into the database. what happens if you were t
 docker stop mysql
 docker rm mysql
 
-A soon as you do that the container along with all the data inside it gets blown away, meaning all its data is gone. If we would
+As soon as you do that the container along with all the data inside it gets blown away, meaning all its data is gone. If we would
 like to persists data we would want to map a dierctory outside the container on the docker host to a dierctory inside the container.
 
 docker run -v /opt/datadir:/var/lib/mysql mysql
 
-In this case we created a directory call /opt/datadir and map that to /var/lib/mysql inside the docker container using the -v option
+In this case we created a directory called /opt/datadir and map that to /var/lib/mysql inside the docker container using the -v option
 and specifying the directory on the docker host followed by a colon and the directory inside the docker container.
 This way when docker container runs, it will implicitly mount the external directory to a folder inside the docker container.
 This way all your data will now be stored in the external volume at /opt/datadir and thus will remain even if you delete the 
@@ -256,6 +256,45 @@ docker logs blissful_hopper
 
 =====================================================================================================================
 
+
+Advanced docker commands:
+docker run ubuntu cat /etc/*release*  (This append command once download ubuntu image will also give details of default latest version say it is 16.04.3)
+
+But what if i want to run another version of this particular Ubuntu Operating system say 17.10, we jsut need to append this tag the name of the image
+
+docker run ubuntu:17.10 cat /etc/*release*  (apended the tag like ubuntu:17:10)
+
+Attach and detach mode:
+docker run ubuntu sleep 1500
+
+after hit enter docker container will be running at foreground for next 15 min and we can not come out of the container.
+In this case we can either use another terminal to establish another duplicate connection to my docker host.
+
+and with another terminal if we want we can stop the running container which is in sleep mode
+docker stop (Container Id)
+
+So if we would like to run it in the background or in a detached mode we could actually specify -d parameter:
+docker run -d ubuntu sleep 1500
+
+So -d parameter that is used to run it in the detach mode in the background when it starts.
+
+Now if i would like to attach back to it so i am going to do it for and for that we actually do a docker attach and specify the container Id.
+docker attach (Container Id)
+
+And the above command will being docker process conatiner and right in the foreground, back to the same situation and then we can go to 
+another terminal to stop the docker container.
+
+=================================================================================================================================
+
+
+
+JENKINS:
+It is a build system. It is a continuous integration and continuous delivery server. So if we want to just play around the hands on experience 
+on it instead of going through the installation instructions and installing a lot of dependencies on my underlying post.
+What we would like to do is simply run Jenkins as a container and just play around with it that way.
+
+https://hub.docker.com/_/jenkins
+
 Article on Jenkins Image:
 
 This is an update for the Jenkins image.
@@ -266,6 +305,84 @@ docker run jenkins
 
 But as of now, we have to use the following command:-
 docker run jenkins/jenkins
+
+So simply if we run jenkins container, it will go out and pull the jenkins images and layers and run the instances of jenkins.
+
+docker run jenkins/jenkins
+
+So as we know Jenkins is a web server so what we are expecting is once we deploy this particular container we are actually expecting 
+to go to a web site to a browser  and browse to this jenkins server and access the web UI.
+So once the above command gets completed and finished pulling the images, that means we can see its extracted and Jenkins is actually running.
+
+so if we want to reconfirm it we can run below command to check:
+docker ps
+
+Now to access the web, this particular application on the wbe UI. One is the terminal IP and another is using by mapping a port to the my docker
+host and accessing it using the external IP.
+
+So to access it using the internal IP we need to be inside our docker host.
+
+Now to got browser and eneter the internal IP address in it. SO to find out the internal IP of the docker container run below command and take 
+docker container id of Jenkins
+docker ps 
+
+Then run docker inspect command folowed by container id and we will see lots of information about docker container status and if we scroll down the
+network section we will see the that it is using bridge network and we can see the IP address details as well say it is 172.17.0.2
+
+docker inspect (container id)
+
+Now go back to UI from our host and we have to open browser and enter the IP 172.17.0.2:8080
+And then we will notice that we will land actually on the Jenkins page and then we can follow the instruction that is there as it requires 
+some user id and password.
+
+SO when we did run the docker run jenkins/jenkins command and after its successfull run in the host it has generated the user id and password
+details that we need to use in the web browser.
+
+Now how do we access it externally:
+So open a web page and go to IP of our docker host which is 192.168.1.14:8080 and if we try to access the jenkins server using that IP address
+we won't be able to access. This is because that particular port or service not listening on the docker host.
+
+Now in order to do that as we saw in the lecture we need to add port mapping.
+
+So we can not a add port mapping while the srevice is running so we have to stop. Check docker ps if its running or not and then stop.
+
+then run below:
+docker run -p 8080:8080 jenkins/jenkins
+
+once above command successfully established and if we go back the external browser and run 192.168.1.14:8080 , then we will be able to see 
+jenkins page which will requier the admin password again.
+Eneter the password and move ahead by following the instructions, no need to install Jenkins and all.
+
+
+How to use this image
+docker run -p 8080:8080 -p 50000:50000 jenkins
+This will store the workspace in /var/jenkins_home. All Jenkins data lives in there - including plugins and configuration. You will probably want to make that a persistent volume (recommended):
+
+docker run -p 8080:8080 -p 50000:50000 -v /your/home:/var/jenkins_home jenkins
+This will store the jenkins data in /your/home on the host. Ensure that /your/home is accessible by the jenkins user in container (jenkins user - uid 1000) or use -u some_other_user parameter with docker run.
+
+You can also use a volume container:
+
+docker run --name myjenkins -p 8080:8080 -p 50000:50000 -v /var/jenkins_home jenkins
+Then myjenkins container has the volume (please do read about docker volume handling to find out more).
+
+
+==============================================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
