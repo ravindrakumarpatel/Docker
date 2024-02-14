@@ -194,7 +194,7 @@ Run - PORT mapping
 
 docker run kodekloud/webapp
 * Running on http://0.0.0.0:5000/ (Press Ctrl+C to quit)
-If we want user access the application through port 80 on any docker host we could map port 80 of local host to port 5000 on the docker container using
+If we want user access the application through port 80 on any docker host we could map host port 80 of local host to container port 5000 on the docker container using
 the -p parameter in our run
 
 docker run -p 80:5000 kodekloud/webapp
