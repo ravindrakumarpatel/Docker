@@ -137,6 +137,64 @@ to run a command inside a runnig container first identify the container you want
 in above example we are going to look the release file to understand what version of the OS is running
 
 
+Run - tag
+docker run redis
+it will display latest Redis version say 5.0.5
+
+But if we wnat to run anaother version of redis like an older version say photo zero, then specify a version separated by a colon
+docker run redis:4.0 
+here redis:4.0 is call as a Tag and in this case docker will pull the images of 4.0 version of Redis and run that
+
+Note: So if do not specify any tags as in the first command (docker run redis), docker will considered the default tag to be latest.
+Latest is a tag associated to the latest version of that software which is governed by the authors of that software.
+
+
+RUN - STDIN
+simple prompt application that when runs ask for name and on entering name prints welcome message.
+If i were to dockeries this application and run it as a docker container like this, it would not wait from the prompt
+
+~/prompt-application/$ ./app.sh
+Welcome! Please enter your name: Ravindra
+
+Hello and welcome Ravindra!
+
+It just prints whatever the application is supposed to print on the standard out
+docker run kodekloud/simple-prompt-docker
+
+Hello and welcome ! 
+
+That is because the docker container does not listen to a standard input, even though are attached to its console. It is not able to read any input from you.
+It does not have a terminal to read inputs from. It runs in non a interactive mode.
+
+If we would like to provide an input, we must map the standarad input of our host to the docker container using the -i parameter.
+-i parameter is used for interactive mode, and when we input our name, it prints the expected output.
+
+docker run -i kodekloud/simple-prompt-docker
+
+Ravindra (when input our name)
+Hello and Welcome Ravindra!
+
+But there is something still missing from this. The prompt, when we ran the app, at first it asked us for our name.
+But when dockerised that prompt is missing, even though it seems to have accepted our input.
+That is because the application prompt on the terminal and we have not attached to the containers terminal.
+
+For this use the -t option as well:
+docker run -it kodekloud/simple-prompt-docker
+
+Here -t stands for a pseudo terminal and when run below command it will ask for enetering the name and display then welcome message:
+docker run -it kodekloud/simple-prompt-docker
+
+Welcome! Please enter your name: Ravindra
+Hello and Welcome Ravindra!
+
+So with the combination of -i and -t we are now attached to the terminal as well as in an interactive mode on the container.
+
+
+
+
+
+
+
 
 
 
