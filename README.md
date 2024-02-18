@@ -368,6 +368,47 @@ Then myjenkins container has the volume (please do read about docker volume hand
 
 
 ==============================================================================================================================================
+**How to create your own image**
+
+Before that why would you need to create your own image?
+It could either be because you can not find a componenet or a service that you want ti use as a part of you application on
+Docker Hub already or you and your team decided that the application youe are developing will be authorized for ease of
+shipping and deployment.
+
+In this case, I am going to containerized an application, as simple web application that i have built using the Python flask framework.
+
+What am i containerizing?
+First we need to understand what we are containerizing or what application we are creating an image for and how the application is built.
+
+So start by thinking what you might do if you want to deploy application manually.
+We write down the steps required in the right order and creating an image for a simple web application.
+
+How to create my own image?
+If i were to set it up manually, I would start with  an operating system like Ubuntu then update the source repository using the apt command
+, then install dependencies using the apt command, then install python dependecies using pip command, the copy over the source code of my
+application to a location like OPPT and then finally run the web server using the flask command.
+
+1 - OS - Unbuntu
+2 - Update apt repo
+3 - Install dependencies using apt
+4 - Install Python dependencies using pip
+5 - Copy source code to /opt folder
+6 - Run the webserver using 'Flask' command
+
+Now that I have instructions, create a Docker file using these.
+Here is a quick overview of the process of creating your own image.
+
+DockerFile:
+
+From Ubuntu
+RUN apt -get update && apt-get -y install python
+RUN pip install flask flask-mysql
+copy ./opt/source-code
+ENTRYPOINT FLASK_APP=/opt/source-code/app.py flask run
+
+
+
+
 
 
 
